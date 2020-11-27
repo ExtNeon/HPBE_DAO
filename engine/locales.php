@@ -120,6 +120,8 @@ $locales['en']['disable_browser_caching_for_all_content'] = 'Disable browser cac
 $locales['en']['this_will_decrease_performance_but_content_will_always_be_downloaded_from_server'] = 'This will decrease performance, but content will always be downloaded from server';
 $locales['en']['dont_count_robots'] = 'Don\'t count robots';
 $locales['en']['dont_include_robots_into_visitors_counter_but_show_on_graph'] = 'Don\'t include robots into visitors counter, but show on graph';
+$locales['en']['known_visitors'] = 'Known visitors';
+
 
 //======================RU==============================
 $locales["ru"]["locale_name"] = "Русский";
@@ -234,6 +236,7 @@ $locales['ru']['disable_browser_caching_for_all_content'] = 'Выключить 
 $locales['ru']['this_will_decrease_performance_but_content_will_always_be_downloaded_from_server'] = 'Это снизит быстродействие, но контент будет всегда скачиваться с сервера';
 $locales['ru']['dont_count_robots'] = 'Не считать роботов';
 $locales['ru']['dont_include_robots_into_visitors_counter_but_show_on_graph'] = 'Не включать роботов в счётчик посещаемости, но показывать на графике';
+$locales['ru']['known_visitors'] = 'Знакомые посетители';
 
 global $language;
 $current_locale = $locales[$language];

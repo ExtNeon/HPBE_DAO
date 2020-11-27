@@ -521,8 +521,10 @@ function process_visitors_counter()
             "AND `time`>=\"" . ($visitors_24h_res_time == null ? time() : $visitors_24h_res_time) . "\" 
             AND `mirror_visitor_id`=\"-1\"");
         $ip_s_list = [];
-        foreach ($table_visitors->tableRecords as $an_record) {
-            $ip_s_list[] = $an_record['ip'];
+        if (!empty($table_visitors->tableRecords)) {
+            foreach ($table_visitors->tableRecords as $an_record) {
+                $ip_s_list[] = $an_record['ip'];
+            }
         }
         if (empty($table_visitors->tableRecords) ||
             ( //Если таких юзер агентов нет, или если они есть, но ип другие и они не боты, то добавить их в список и посчитать в счётчике
@@ -542,7 +544,7 @@ function process_visitors_counter()
             $table_visitors->addNewRecord([
                 'time' => time(),
                 'ip' => htmlspecialchars($_SERVER['REMOTE_ADDR']),
-                'host' => htmlspecialchars($_SERVER['REMOTE_HOST']),
+                'host' => isset($_SERVER['REMOTE_HOST']) ? htmlspecialchars($_SERVER['REMOTE_HOST']) : '',
                 'user_agent' => htmlspecialchars($_SERVER['HTTP_USER_AGENT']),
                 'user_id' => $currentUser != null ? $currentUser['id'] : '-1',
                 'referer' => htmlspecialchars($_SERVER['HTTP_REFERER']),
@@ -577,7 +579,7 @@ function process_visitors_counter()
         if (!$querySuccess) {
             addErrorToLog("VISITORS COUNTER ERROR", "Error incrementing Data visitors");
         } else {
-            setcookie('DAILY_VISITOR', time() + 86400, time() + (86400 * 30), '/');
+
 
             if ($visitors_24h_res_time !== null) {
                 if (time() - $visitors_24h_res_time > 86400) {
@@ -589,6 +591,7 @@ function process_visitors_counter()
                         "known_count" => siteconfig_get("visitors_known24h") - ($was_visitor ? 1 : 0),
                         "bots" => siteconfig_get("visitors_bots_24h") - ($was_bot ? 1 : 0)
                     ]);
+                    $visitors_24h_res_time = time();
                     $querySuccess = $table_daysCounterInfo->applyChanges();
                     siteconfig_add('visitors_24h_last_reset_time', time());
                     siteconfig_add('visitors_24h', 1);
@@ -599,6 +602,7 @@ function process_visitors_counter()
                         addErrorToLog("VISITORS COUNTER ERROR", "Error resetting visitors");
                     }
                 }
+                setcookie('DAILY_VISITOR', $visitors_24h_res_time + 86400, time() + (86400 * 30), '/');
             } else {
                 addErrorToLog("VISITORS COUNTER ERROR", "Error get last reset time");
             }
@@ -670,11 +674,12 @@ function isBot($user_agent)
 
     return false;
 }
+
 function removeDirectory($dir) {
     if ($objs = glob($dir."/*")) {
-       foreach($objs as $obj) {
-         is_dir($obj) ? removeDirectory($obj) : unlink($obj);
-       }
+        foreach($objs as $obj) {
+            is_dir($obj) ? removeDirectory($obj) : unlink($obj);
+        }
     }
     rmdir($dir);
-  }
+}

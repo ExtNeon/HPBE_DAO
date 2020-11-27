@@ -452,6 +452,7 @@ function adminPanelBody_DrawVisitorJournal()
                     $table_visitors->deleteRecord('id', $currentRecord['id']);
                 }
                 $user_login_id = $currentRecord['user_id'];
+                $user_login_id_redefined = false;
                 $location = $currentRecord['request'];
                 if ($currentRecord['visit_count'] > 1) {
                     foreach ($table_visitors->tableRecords as $search_item) {
@@ -460,6 +461,7 @@ function adminPanelBody_DrawVisitorJournal()
                                     ':</b> ' . $search_item['referer'] . ' -> ' . $search_item['request']) . '</p>';
                             if ($user_login_id < 0 && $search_item['user_id'] >= 0) {
                                 $user_login_id = $search_item['user_id'];
+                                $user_login_id_redefined = true;
                             }
                         }
                     }
@@ -471,6 +473,9 @@ function adminPanelBody_DrawVisitorJournal()
                     $username = '<b>' . $current_locale["robot"] . '</b>';
                 } else {
                     $username = $current_locale["guest"];
+                }
+                if ($user_login_id_redefined) {
+                    $username .= ' <i>(взято из логов)</i>';
                 }
                 if ($currentRecord['visitor_cookie'] > -1) {
                     $username .= ', <b>уже посещал сайт '. date("d.m.Y", $currentRecord['visitor_cookie']) . '</b>';
